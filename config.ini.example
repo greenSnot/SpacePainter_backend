@@ -1,0 +1,21 @@
+{
+  "packages": [
+    "python",
+    "python3",
+    "vim",
+    "redis-server",
+    "unzip",
+    "zsh",
+    "curl",
+    "ssh",
+    "git",
+    "python-pip"
+  ],
+  "pip-packages": [
+    "pymongo",
+    "demjson",
+    "threadpool",
+    "qiniu"
+  ],
+  "command": ""
+}
