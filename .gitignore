@@ -1,2 +1,2 @@
-config.ini
-mongo.password
+config.py
+./build

@@ -1,8 +1,8 @@
 FROM ubuntu:14.04
 MAINTAINER Patrick
-ADD ./sources.list /etc/apt/
+ADD ./build/sources.list /etc/apt/
 RUN apt-get update
-ADD ./config.ini /root/
+ADD ./build/docker_config /root/
 RUN apt-get install -y git
 RUN apt-get install -y python
 RUN apt-get install -y wget
@@ -20,6 +20,6 @@ RUN sudo mkdir /data
 RUN sudo mkdir /data/db
 RUN sudo chmod 777 -R /data
 
-ADD ./mongo.password /root/
-RUN sudo mongod --port 29017 --fork --logpath /root/mongodb.log --logappend && sleep 5 && mongo --port 29017 admin "/root/mongo.password"
+ADD ./build/mongo_config /root/
+RUN sudo mongod --port 29017 --fork --logpath /root/mongodb.log --logappend && sleep 5 && mongo --port 29017 admin "/root/mongo_config"
 ENTRYPOINT sudo mongod --port 29017 --auth --logpath /root/mongodb.log --logappend

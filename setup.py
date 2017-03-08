@@ -20,7 +20,7 @@ def run_script(script, stdin=None):
         print stderr
     return stdout, stderr
 
-with open(sys.path[0] + '/config.ini') as json_data:
+with open(sys.path[0] + '/docker_config') as json_data:
     config = json.load(json_data)
 
 def split(t,pattern):
