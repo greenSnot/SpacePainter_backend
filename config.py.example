@@ -1,0 +1,60 @@
+config = {
+  "docker": {
+    "packages": [
+      "python",
+      "python3",
+      "vim",
+      "redis-server",
+      "unzip",
+      "zsh",
+      "curl",
+      "ssh",
+      "git",
+      "python-pip"
+    ],
+    "pip-packages": [
+      "pymongo",
+      "demjson",
+      "threadpool",
+      "qiniu"
+    ],
+    "command": ""
+  },
+  "mongo": {
+    "command": """
+      db.createUser(
+        {
+          user: "admmin",
+          pwd: "passwoord",
+          roles: [
+            {
+              role: "userAdminAnyDatabase",
+              db: "admin"
+            }
+          ]
+        },
+        {
+          w: "majority",
+          wtimeout: 5000
+        }
+      )
+      db.createCollection('test');
+    """
+  },
+  "redis": {
+    "secret": "barbar"
+  },
+  "apt_sources": """
+    deb http://mirrors.cloud.aliyuncs.com/ubuntu/ trusty main restricted universe multiverse
+    deb http://mirrors.cloud.aliyuncs.com/ubuntu/ trusty-security main restricted universe multiverse
+    deb http://mirrors.cloud.aliyuncs.com/ubuntu/ trusty-updates main restricted universe multiverse
+    deb http://mirrors.cloud.aliyuncs.com/ubuntu/ trusty-proposed main restricted universe multiverse
+    deb http://mirrors.cloud.aliyuncs.com/ubuntu/ trusty-backports main restricted universe multiverse
+    
+    deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse
+    deb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse
+    deb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse
+    deb http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse
+    deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse
+  """
+}
