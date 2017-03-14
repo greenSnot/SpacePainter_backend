@@ -1,3 +1,5 @@
 config.py
 build
 Dockerfile
+www/config/*
+www/node_modules

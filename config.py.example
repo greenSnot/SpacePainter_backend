@@ -103,7 +103,7 @@ ENTRYPOINT sudo mongod --port """ + str(MONGO_PORT) + """ --auth --fork --logpat
       "password": REDIS_PASSWORD,
     },
     "client": {
-      "session_secret": "huangjianguanglyz",
+      "session_secret": "",
       "session": {
         "port": REDIS_PORT,
         "host": "127.0.0.1",
@@ -120,6 +120,10 @@ ENTRYPOINT sudo mongod --port """ + str(MONGO_PORT) + """ --auth --fork --logpat
   },
   "http": {
     "port": HTTP_PORT,
+  },
+  "cdn": {
+    "AK": "",
+    "SK": "",
   },
   "wechat": {
     "app_id": '',
