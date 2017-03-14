@@ -1,6 +1,6 @@
 var express = require('express');
-var utils = require('../utils');
-var config = require('./config');
+var urlencode = require('urlencode');
+var config = require('../config/wechat_config.json');
 var db = require('../db/mongo_schema');
 var nodegrass = require('nodegrass');
 
@@ -134,7 +134,7 @@ exports.login_checker = function(req, res, next) {
 
   var full_url = req.protocol + '://' + req.get('host') + req.originalUrl;
   res.writeHead(301, {
-    'Location': 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + config.app_id + '&redirect_uri=' + utils.urlencode(full_url) + '&response_type=code&scope=snsapi_userinfo&state=WECHAT_OAUTH_RESPONSE#wechat_redirect'
+    'Location': 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + config.app_id + '&redirect_uri=' + urlencode(full_url) + '&response_type=code&scope=snsapi_userinfo&state=WECHAT_OAUTH_RESPONSE#wechat_redirect'
   });
   res.end();
 };
