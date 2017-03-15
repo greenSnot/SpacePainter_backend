@@ -3,6 +3,8 @@ var urlencode = require('urlencode');
 var config = require('../config/wechat_config.json');
 var db = require('../db/mongo_schema');
 var nodegrass = require('nodegrass');
+var app = require('../app.js');
+var host_config = require('../config/host_config.json');
 
 function is_wechat_browser(req) {
   return req.headers['user-agent'] && req.headers['user-agent'].indexOf('MicroMessenger') >= 0;
