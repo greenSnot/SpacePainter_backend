@@ -67,8 +67,8 @@ ENTRYPOINT sudo mongod --port """ + str(MONGO_PORT) + """ --auth --fork --logpat
       "command": """
         db.createUser(
           {
-            user: "chedanmao",
-            pwd: "tianjugou",
+            user: "",
+            pwd: "",
             roles: [
               {
                 role: "userAdminAnyDatabase",

@@ -4,7 +4,7 @@ var config = require('../config/wechat_config.json');
 var db = require('../db/mongo_schema');
 var nodegrass = require('nodegrass');
 
-function is_wechat_browser() {
+function is_wechat_browser(req) {
   return req.headers['user-agent'] && req.headers['user-agent'].indexOf('MicroMessenger') >= 0;
 }
 
@@ -126,7 +126,7 @@ exports.login_checker = function(req, res, next) {
     return;
   }
 
-  if (!is_wechat_browser()) {
+  if (!is_wechat_browser(req)) {
     //TODO
     res.json({});
     return;
