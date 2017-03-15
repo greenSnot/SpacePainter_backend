@@ -1,6 +1,9 @@
 cp config.py.example config.py
 // change config.py
 
+// install modules
+cd www && npm install
+
 // run container
 python ./build_config.py
 docker build -t ubuntu:init .

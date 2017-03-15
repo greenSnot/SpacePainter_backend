@@ -66,7 +66,16 @@ for i in config['pip-packages']:
 
 # install nodejs & npm
 print('install nodejs & npm')
-run_script('curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -')
-run_script('sudo apt-get install -y nodejs')
+# @@@@@@ will fail if without VPN
+# run_script('curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -')
+# run_script('sudo apt-get install -y nodejs')
+run_script('''
+cd ~ && mkdir downloads && cd downloads && wget https://nodejs.org/dist/v6.10.0/node-v6.10.0-linux-x64.tar.xz
+xz -d node-v6.10.0-linux-x64.tar.xz
+tar -xvf node-v6.10.0-linux-x64.tar
+mv node-v6.10.0-linux-x64 node
+echo "export PATH=$PATH:~/downloads/node/bin" >> ~/.bashrc
+source ~/.bashrc
+''');
 
 run_scripts(config['command'])
