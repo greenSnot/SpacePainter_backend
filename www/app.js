@@ -5,9 +5,10 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var _ = require('lodash');
 var app = express();
-var compression= require('compression');
+var compression = require('compression');
 
 module.exports = app;
+
 // connect db
 require('./db/mongo.js');
 require('./db/redis.js');
