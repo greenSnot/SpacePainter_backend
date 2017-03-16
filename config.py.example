@@ -26,6 +26,10 @@ RUN sudo apt-get install -y mongodb-org
 # set up database
 RUN sudo mkdir /data && sudo mkdir /data/db && sudo chmod 777 -R /data
 
+# install nodejs & npm
+RUN curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+RUN apt-get install -y nodejs
+
 ADD ./www/package.json /root/www/
 RUN cd /root/www && npm install
 RUN sudo npm install -g pm2
