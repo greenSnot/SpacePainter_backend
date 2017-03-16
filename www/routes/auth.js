@@ -4,13 +4,14 @@ var config = require('../config/wechat_config.json');
 var db = require('../db/mongo_schema');
 var nodegrass = require('nodegrass');
 var host_config = require('../config/host_config.json');
+var redis = require('../db/redis').redis;
 
 function is_wechat_browser(req) {
   return req.headers['user-agent'] && req.headers['user-agent'].indexOf('MicroMessenger') >= 0;
 }
 
 module.exports.wechat_code_callback = function(req, res) {
-  var redirect_url = urlencode.decode(req.body.state);
+  var redirect_url = redis.get(req.body.state);
   function get_token_by_code(code) {
     var get_info_token= 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + config.app_id + '&secret=' + config.app_secret + '&code=' + code + '&grant_type=authorization_code';
     return new Promise(function(resolve, reject) {
@@ -134,9 +135,18 @@ module.exports.login_checker = function(req, res, next) {
 
   var host_url = req.protocol + '://' + req.get('host');
   var current_url = host_url + req.originalUrl;
-  var call_back_url = host_url + 'wechat_code_callback/';
-  res.writeHead(301, {
-    'Location': 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + config.app_id + '&redirect_uri=' + urlencode(call_back_url) + '&response_type=code&scope=snsapi_userinfo&state=' + urlencode(current_url) + '#wechat_redirect'
+  var call_back_url = host_url + '/wechat_code_callback';
+
+  var random_id = Math.floor(Math.random() * 1000000);
+  redis.pipeline().set(random_id, current_url, 'PX', 1000 * 60).exec(function(err, results) {
+    if (err) {
+      res.json({err: -1});
+      return;
+    }
+
+    res.writeHead(301, {
+      'Location': 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + config.app_id + '&redirect_uri=' + urlencode(call_back_url) + '&response_type=code&scope=snsapi_userinfo&state=' + random_id + '#wechat_redirect'
+    });
+    res.end();
   });
-  res.end();
 };
