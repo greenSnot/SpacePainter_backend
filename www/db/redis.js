@@ -5,9 +5,7 @@ var config = require('../config/redis_client.json');
 var redis;
 
 module.exports.init = function() {
-  redis = new Redis(config.connect).connect(function() {
-    console.log('redis connected');
-  });
+  redis = new Redis(config.connect);
 
   // init session
   require('../app').use(session({
@@ -21,5 +19,5 @@ module.exports.init = function() {
     }
   }));
 
-  module.exports.redis = redis;
 };
+module.exports.redis = redis;
