@@ -117,14 +117,14 @@ ENTRYPOINT sudo mongod --port """ + str(MONGO_PORT) + """ --auth --fork --logpat
           "native_parser": True
         },
         "auth": {
-          "authdb": "admin"
+          "authdb": MONGO_DB_NAME,
         },
         "server": {
           "pollSize": 5,
           "keepAlive": 1
         },
-        "user": MONGO_ADMIN_USER,
-        "pass": MONGO_ADMIN_PASS
+        "user": MONGO_USER,
+        "pass": MONGO_PASS
       }
     }
   },
