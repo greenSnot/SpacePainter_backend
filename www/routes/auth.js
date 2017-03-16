@@ -47,10 +47,17 @@ module.exports.wechat_code_callback = function(req, res) {
       });
     }
 
+    function redirect() {
+      res.writeHead(301, {
+        'Location': redirect_url
+      });
+      res.end();
+    }
+
     function update_old_user_info_and_login(user_data) {
       req.session.user_id = user_data._id;
       req.session.save();
-      next();
+      redirect();
     }
 
     function create_new_user(user_info) {
@@ -80,7 +87,7 @@ module.exports.wechat_code_callback = function(req, res) {
           req.session.user = result._id;
           req.session.save();
           console.log('new wechat user');
-          next();
+          redirect();
         });
       });
     }
@@ -111,7 +118,7 @@ function logout(req) {
   req.session.save();
 }
 
-function wechat_redirect_code(req, res) {
+module.exports.wechat_redirect_code = function(req, res) {
   var url = urlencode(req.body.url);
   var random_id = Math.floor(Math.random() * 1000000);
   redis.pipeline().set(random_id, current_url, 'PX', 1000 * 60).exec(function(err, results) {

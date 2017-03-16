@@ -33,12 +33,12 @@ app.use(function(req, res, next) {
 
 // For wechat offical server
 app.get('/wechat_code_callback', auth.wechat_code_callback);
-app.post('/wechat_redirect_code', auth.wechat_redirect_code);
+app.get('/wechat_redirect_code', auth.wechat_redirect_code);
 
 app.use(auth.login_checker);
 app.use('/wechat', require('./routes/wechat'));
-app.get('/user', user);
-app.get('/discovery', discovery);
+app.use('/user', user);
+app.use('/discovery', discovery);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
