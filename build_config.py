@@ -1,4 +1,5 @@
 import os
+import hashlib
 import json
 import sys
 
@@ -7,7 +8,30 @@ def createDir(d):
     if not os.path.exists(d):
         os.makedirs(d)
 
+def read_if_exist(f):
+    try:
+        content = open(f).read()
+    except Exception as err:
+        return False
+    return content
+
+def sha1(a):
+    m2 = hashlib.sha1()
+    m2.update(a)
+    return m2.hexdigest()
+
+def compare(content1, content2):
+    if content1:
+        hash1 = sha1(content1)
+        hash2 = sha1(content2)
+        return hash1 == hash2
+    return False
+
 def write(filename, content, append=False):
+    content1 = read_if_exist(filename)
+    if compare(content1, content):
+        print filename + ' is not changed'
+        return
     type='w'
     if append:
         type = 'a'
