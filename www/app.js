@@ -8,6 +8,12 @@ var app = express();
 var compression = require('compression');
 var auth = require('./routes/auth');
 
+module.exports = app;
+
+// connect db
+require('./db/mongo.js').init();
+require('./db/redis.js').init();
+
 app.use(logger('dev'));
 app.use(compression());
 app.use(bodyParser.json());
@@ -42,9 +48,3 @@ app.use(function(err, req, res, next) {
     error_message: err.message,
   });
 });
-
-module.exports = app;
-
-// connect db
-require('./db/mongo.js').init();
-require('./db/redis.js').init();

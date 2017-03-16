@@ -60,9 +60,7 @@ module.exports.start_token_checker = function() {
 
 module.exports.get_token = function() {
   return new Promise(function(resolve, reject) {
-    redis.pipeline()
-         .get('wechat_access_token')
-         .exec(function(err, results) {
+    redis.get('wechat_access_token', function(err, results) {
       if (err) {
         reject(err);
       } else {
@@ -74,9 +72,7 @@ module.exports.get_token = function() {
 
 module.exports.get_ticket = function() {
   return new Promise(function(resolve, reject) {
-    redis.pipeline()
-         .get('wechat_ticket')
-         .exec(function(err, results) {
+    redis.get('wechat_ticket', function(err, results) {
       if (err) {
         reject(err);
       } else {
