@@ -6,6 +6,8 @@ var bodyParser = require('body-parser');
 var _ = require('lodash');
 var app = express();
 var compression = require('compression');
+var auth = require('./routes/auth');
+var router = express.Router();
 
 module.exports = app;
 
@@ -24,7 +26,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 require('./routes/wechat_token').start_token_checker();
 
-app.use(require('./routes/auth').login_checker);
+// For wechat offical server
+app.use('/wechat_code_callback', router.post('/', auth.wechat_code_callback));
+
+app.use(auth.login_checker);
 app.use('/wechat', require('./routes/wechat'));
 
 // catch 404 and forward to error handler

@@ -3,7 +3,6 @@ var urlencode = require('urlencode');
 var config = require('../config/wechat_config.json');
 var db = require('../db/mongo_schema');
 var nodegrass = require('nodegrass');
-var app = require('../app.js');
 var host_config = require('../config/host_config.json');
 
 function is_wechat_browser(req) {
@@ -11,8 +10,7 @@ function is_wechat_browser(req) {
 }
 
 function wechat_code_callback(req, res) {
-  //TODO
-  var redirect_url = '';
+  var redirect_url = urlencode.decode(req.body.redirect_uri);
   function get_token_by_code(code) {
     var get_info_token= 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + config.app_id + '&secret=' + config.app_secret + '&code=' + code + '&grant_type=authorization_code';
     return new Promise(function(resolve, reject) {

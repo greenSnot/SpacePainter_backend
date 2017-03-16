@@ -1,6 +1,8 @@
 var qiniu = require('qiniu');
 var redis = require('../db/redis').redis;
 var config = require('../config/cdn_config.json');
+var express = require('express');
+var router = express.Router();
 
 qiniu.conf.ACCESS_KEY = config.AK;
 qiniu.conf.SECRET_KEY = config.SK;
@@ -59,3 +61,4 @@ function get_token(req, bucket, file_path, file_name, cb_url) {
     });
   });
 }
+module.exports = router;
