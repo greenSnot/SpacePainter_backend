@@ -88,9 +88,9 @@ ENTRYPOINT sudo mongod --port """ + str(MONGO_PORT) + """ --auth --fork --logpat
           },
           {
             w: "majority",
-            wtimeout: 5000
+            wtimeout: 1000
           }
-        )
+        );
         db.createUser(
           {
             user: \"""" + MONGO_USER + """\",
@@ -104,10 +104,9 @@ ENTRYPOINT sudo mongod --port """ + str(MONGO_PORT) + """ --auth --fork --logpat
           },
           {
             w: "majority",
-            wtimeout: 5000
+            wtimeout: 1000
           }
-        )
-        use """ + MONGO_DB_NAME + """
+        );
         db.createCollection('test');
       """,
     },
