@@ -5,10 +5,12 @@ var config = require('../config/redis_client.json');
 var redis;
 
 module.exports.init = function() {
-  reids = new Redis(config.connect);
+  redis = new Redis(config.connect).connect(function() {
+    console.log('redis connected');
+  });
 
   // init session
-  require('../app.js').use(session({
+  require('../app').use(session({
     resave: false,
     saveUninitialized: true,
     store: new RedisStore(config.session),
@@ -18,6 +20,6 @@ module.exports.init = function() {
       maxAge: 1000 * 60 * 60 * 24 * 7
     }
   }));
-};
 
-module.exports.redis = redis;
+  module.exports.redis = redis;
+};
