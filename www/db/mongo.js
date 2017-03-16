@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var config = require('../config/mongo_client.json');
 
+mongoose.Promise = global.Promise;
 module.exports.init = function() {
   mongoose.connect(config.mongodb_url, config.connect);
   var con = mongoose.connection;
