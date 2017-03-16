@@ -1,7 +1,11 @@
 HTTP_PORT = 80
-MONGO_PORT = 29017
 REDIS_PORT = 6002
 REDIS_PASSWORD = ""
+
+MONGO_PORT = 29017
+MONGO_COLLECTION_NAME = ''
+MONGO_ADMIN_USER = ''
+MONGO_ADMIN_PASS = ''
 
 config = {
   "docker_file": """
@@ -71,8 +75,8 @@ ENTRYPOINT sudo mongod --port """ + str(MONGO_PORT) + """ --auth --fork --logpat
       "command": """
         db.createUser(
           {
-            user: "",
-            pwd: "",
+            user: \"""" + MONGO_ADMIN_USER + """\",
+            pwd: \"""" + MONGO_ADMIN_PASS + """\",
             roles: [
               {
                 role: "userAdminAnyDatabase",
@@ -85,11 +89,11 @@ ENTRYPOINT sudo mongod --port """ + str(MONGO_PORT) + """ --auth --fork --logpat
             wtimeout: 5000
           }
         )
-        db.createCollection('');
+        db.createCollection('""" + MONGO_COLLECTION_NAME + """');
       """,
     },
     "client": {
-      "mongodb_url": 'mongodb://127.0.0.1:' + str(MONGO_PORT) + '/s',
+      "mongodb_url": 'mongodb://127.0.0.1:' + str(MONGO_PORT) + '/' + MONGO_COLLECTION_NAME,
       "connect": {
         "db": {
           "native_parser": True
@@ -98,8 +102,8 @@ ENTRYPOINT sudo mongod --port """ + str(MONGO_PORT) + """ --auth --fork --logpat
           "pollSize": 5,
           "keepAlive": 1
         },
-        "user": "",
-        "pass": ""
+        "user": MONGO_ADMIN_USER,
+        "pass": MONGO_ADMIN_PASS
       }
     }
   },
@@ -133,9 +137,11 @@ ENTRYPOINT sudo mongod --port """ + str(MONGO_PORT) + """ --auth --fork --logpat
     "app_secret": ''
   },
   "host": {
-    "domain": ".com",
-    "domains": [".com"],
-    "email": "@.com",
+    "domain": "",
+    "domains": [],
+    "email": "",
+    "command": """
+    """
   },
   "apt_sources": """
     deb http://mirrors.cloud.aliyuncs.com/ubuntu/ trusty main restricted universe multiverse

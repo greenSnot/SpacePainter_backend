@@ -18,9 +18,9 @@ module.exports.wechat_code_callback = function(req, res) {
     }
     var redirect_url = results;
     function get_token_by_code(code) {
-      var get_info_token= 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + config.app_id + '&secret=' + config.app_secret + '&code=' + code + '&grant_type=authorization_code';
+      var get_info_token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + config.app_id + '&secret=' + config.app_secret + '&code=' + code + '&grant_type=authorization_code';
       return new Promise(function(resolve, reject) {
-        nodegrass.get(get_code_token_url, function(data, status, headers) {
+        nodegrass.get(get_info_token_url , function(data, status, headers) {
           try {
             data = JSON.parse(data);
           } catch(e) {
@@ -39,7 +39,6 @@ module.exports.wechat_code_callback = function(req, res) {
       var userinfo_url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + token_data.access_token + '&openid=' + token_data.openid + '&lang=zh_CN';
       return new Promise(function(resolve, reject) {
         nodegrass.get(userinfo_url, function(data, status, headers) {
-          console.log(data);
           try{
             data = JSON.parse(data);
           } catch(e) {
@@ -92,7 +91,7 @@ module.exports.wechat_code_callback = function(req, res) {
 
     function update_user_info(user_info) {
       db.Users.findOne({
-        'wechat.openid': data.openid
+        'wechat.openid': user_info.openid
       }).then(function(user, err) {
         if (user) {
           update_old_user_info_and_login(user);
