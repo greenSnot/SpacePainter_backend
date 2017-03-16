@@ -30,8 +30,8 @@ def compare(content1, content2):
 def write(filename, content, append=False):
     content1 = read_if_exist(filename)
     if compare(content1, content):
-        print filename + ' is not changed'
         return
+    print filename + ' is changed'
     type='w'
     if append:
         type = 'a'
