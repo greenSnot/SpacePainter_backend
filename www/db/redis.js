@@ -2,11 +2,10 @@ var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var Redis = require('ioredis');
 var config = require('../config/redis_client.json');
-var redis;
+
+var redis = new Redis(config.connect);
 
 module.exports.init = function() {
-  redis = new Redis(config.connect);
-
   // init session
   require('../app').use(session({
     resave: false,

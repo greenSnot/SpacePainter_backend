@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 require('./routes/wechat_token').start_token_checker();
 
 // For wechat offical server
-app.post('/wechat_code_callback', auth.wechat_code_callback);
+app.get('/wechat_code_callback', auth.wechat_code_callback);
 
 app.use(auth.login_checker);
 app.use('/wechat', require('./routes/wechat'));
