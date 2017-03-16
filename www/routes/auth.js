@@ -80,7 +80,7 @@ module.exports.wechat_code_callback = function(req, res) {
       model.save(function(result) {
         return db.Users.findOne({
           'wechat.openid': user_info.openid
-        }).then(function(result) {
+        }).exec().then(function(result) {
           req.session.user = result._id;
           req.session.save();
           console.log('new wechat user');
@@ -92,7 +92,7 @@ module.exports.wechat_code_callback = function(req, res) {
     function update_user_info(user_info) {
       db.Users.findOne({
         'wechat.openid': user_info.openid
-      }).then(function(user, err) {
+      }).exec().then(function(user, err) {
         if (user) {
           update_old_user_info_and_login(user);
         } else {
@@ -115,12 +115,12 @@ function logout(req) {
   req.session.save();
 }
 
-module.exports.login_checker = function(req, res, next) {
+module.exports.login_checker = function(err, req, res, next) {
   var user_id = req.session ? req.session.user_id : undefined;
   if (user_id) {
     db.Users.findOne({
       _id: user_id
-    }).then(function(u) {
+    }).exec().then(function(u) {
       if (u) {
         next();
         return;
