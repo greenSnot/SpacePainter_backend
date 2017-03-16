@@ -121,7 +121,7 @@ function logout(req) {
 module.exports.wechat_redirect_code = function(req, res) {
   var url = urlencode(req.body.url);
   var random_id = Math.floor(Math.random() * 1000000);
-  redis.pipeline().set(random_id, current_url, 'PX', 1000 * 60).exec(function(err, results) {
+  redis.pipeline().set(random_id, url, 'PX', 1000 * 60).exec(function(err, results) {
     if (err) {
       res.json({code: -1});
       return;
@@ -130,9 +130,9 @@ module.exports.wechat_redirect_code = function(req, res) {
       redirect_code: random_id
     }});
   });
-}
+};
 
-module.exports.login_checker = function(err, req, res, next) {
+module.exports.login_checker = function(req, res, next) {
   var user_id = req.session ? req.session.user_id : undefined;
   if (user_id) {
     db.Users.findOne({

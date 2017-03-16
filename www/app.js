@@ -33,7 +33,7 @@ app.use(function(req, res, next) {
 
 // For wechat offical server
 app.get('/wechat_code_callback', auth.wechat_code_callback);
-app.get('/wechat_redirect_code', auth.wechat_redirect_code);
+app.post('/wechat_redirect_code', auth.wechat_redirect_code);
 
 app.use(auth.login_checker);
 app.use('/wechat', require('./routes/wechat'));
