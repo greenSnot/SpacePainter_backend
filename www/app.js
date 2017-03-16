@@ -7,6 +7,8 @@ var _ = require('lodash');
 var app = express();
 var compression = require('compression');
 var auth = require('./routes/auth');
+var user = require('./routes/user');
+var discovery = require('./routes/discovery');
 
 module.exports = app;
 
@@ -20,19 +22,23 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// TODO using CDN instead
-app.use(express.static(path.join(__dirname, 'public')));
-
 require('./routes/wechat_token').start_token_checker();
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header('Access-Control-Allow-Origin', req.headers.origin);
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+  next();
+});
 
 // For wechat offical server
 app.get('/wechat_code_callback', auth.wechat_code_callback);
+app.post('/wechat_redirect_code', auth.wechat_redirect_code);
 
 app.use(auth.login_checker);
 app.use('/wechat', require('./routes/wechat'));
-app.get('/', function(req, res) {
-  res.json({msg: 'ok'});
-});
+app.get('/user', user);
+app.get('/discovery', discovery);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

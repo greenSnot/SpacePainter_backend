@@ -6,14 +6,10 @@ var nodegrass = require('nodegrass');
 var host_config = require('../config/host_config.json');
 var redis = require('../db/redis').redis;
 
-function is_wechat_browser(req) {
-  return req.headers['user-agent'] && req.headers['user-agent'].indexOf('MicroMessenger') >= 0;
-}
-
 module.exports.wechat_code_callback = function(req, res) {
   redis.get(req.body.state, function(err, results) {
     if (err) {
-      res.json({err: -2});
+      res.json({code: -2});
       return;
     }
     var redirect_url = results;
@@ -115,6 +111,20 @@ function logout(req) {
   req.session.save();
 }
 
+function wechat_redirect_code(req, res) {
+  var url = urlencode(req.body.url);
+  var random_id = Math.floor(Math.random() * 1000000);
+  redis.pipeline().set(random_id, current_url, 'PX', 1000 * 60).exec(function(err, results) {
+    if (err) {
+      res.json({code: -1});
+      return;
+    }
+    res.json({code: 0, data: {
+      redirect_code: random_id
+    }});
+  });
+}
+
 module.exports.login_checker = function(err, req, res, next) {
   var user_id = req.session ? req.session.user_id : undefined;
   if (user_id) {
@@ -130,28 +140,8 @@ module.exports.login_checker = function(err, req, res, next) {
       res.redirect(req.originalUrl);
     });
     return;
-  }
-
-  if (!is_wechat_browser(req)) {
-    //TODO
-    res.json({});
+  } else {
+    res.json({code: -1, msg: 'need to login'});
     return;
   }
-
-  var host_url = req.protocol + '://' + req.get('host');
-  var current_url = host_url + req.originalUrl;
-  var call_back_url = host_url + '/wechat_code_callback';
-
-  var random_id = Math.floor(Math.random() * 1000000);
-  redis.pipeline().set(random_id, current_url, 'PX', 1000 * 60).exec(function(err, results) {
-    if (err) {
-      res.json({err: -1});
-      return;
-    }
-
-    res.writeHead(301, {
-      'Location': 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + config.app_id + '&redirect_uri=' + urlencode(call_back_url) + '&response_type=code&scope=snsapi_userinfo&state=' + random_id + '#wechat_redirect'
-    });
-    res.end();
-  });
 };
