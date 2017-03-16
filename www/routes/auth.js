@@ -80,7 +80,7 @@ module.exports.wechat_code_callback = function(req, res) {
         works: [],
         favorites: [],
       });
-      model.save(function(result) {
+      model.save().then(function(result) {
         return db.Users.findOne({
           'wechat.openid': user_info.openid
         }).exec().then(function(result) {
