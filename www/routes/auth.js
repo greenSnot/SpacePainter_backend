@@ -7,7 +7,7 @@ var host_config = require('../config/host_config.json');
 var redis = require('../db/redis').redis;
 
 module.exports.wechat_code_callback = function(req, res) {
-  redis.get(req.body.state, function(err, results) {
+  redis.get(req.query.state, function(err, results) {
     if (err) {
       res.json({code: -2});
       return;
@@ -119,7 +119,7 @@ function logout(req) {
 }
 
 module.exports.wechat_redirect_code = function(req, res) {
-  var url = urlencode(req.body.url);
+  var url = req.body.url;
   var random_id = Math.floor(Math.random() * 1000000);
   redis.pipeline().set(random_id, url, 'PX', 1000 * 60).exec(function(err, results) {
     if (err) {
