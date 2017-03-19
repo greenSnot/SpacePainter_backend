@@ -1,24 +1,31 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var uuid = require('node-uuid');
 
 var worksSchema = mongoose.Schema({
-  id: {
+  _id: {
     type: String,
-    index: true,
-    required: true,
-    unique: true
+    default: uuid.v1
   },
   name: {
     type: String,
     required: true
   },
-  user_id: String
-}, {
-  _id: true,
-  autoIndex: true
+  description: {
+    type: String,
+    required: true
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'Users'
+  }
 });
 
 var usersSchema = mongoose.Schema({
+  _id: {
+    type: String,
+    default: uuid.v1
+  },
   name: {
     type: String,
     index: true,
@@ -46,18 +53,37 @@ var usersSchema = mongoose.Schema({
   },
   works: [
     {
-      work_id: String
+      type: Schema.Types.ObjectId,
+      ref: 'Works'
     }
   ],
   favorites: [
     {
-      work_id: String
+      type: Schema.Types.ObjectId,
+      ref: 'Works'
     }
   ],
-}, {
-  _id:true,
-  autoIndex:true
+});
+
+var commentsSchema = mongoose.Schema({
+  _id: {
+    type: String,
+    default: uuid.v1
+  },
+  content: {
+    type: String,
+    required: true
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'Users'
+  },
+  work: {
+    type: Schema.Types.ObjectId,
+    ref: 'Works'
+  }
 });
 
 exports.Users = mongoose.model('Users', usersSchema);
 exports.Works = mongoose.model('Works', worksSchema);
+exports.Works = mongoose.model('Comments', commentsSchema);

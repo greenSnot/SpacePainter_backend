@@ -8,6 +8,8 @@ var app = express();
 var compression = require('compression');
 var auth = require('./routes/auth');
 var user = require('./routes/user');
+var work = require('./routes/work');
+var upload = require('./routes/cdn');
 var discovery = require('./routes/discovery');
 
 module.exports = app;
@@ -38,6 +40,8 @@ app.post('/wechat_redirect_code', auth.wechat_redirect_code);
 app.use(auth.login_checker);
 app.use('/wechat', require('./routes/wechat'));
 app.use('/user', user);
+app.use('/work', work);
+app.use('/upload', upload);
 app.use('/discovery', discovery);
 
 // catch 404 and forward to error handler

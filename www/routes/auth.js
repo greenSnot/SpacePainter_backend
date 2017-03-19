@@ -5,6 +5,7 @@ var db = require('../db/mongo_schema');
 var nodegrass = require('nodegrass');
 var host_config = require('../config/host_config.json');
 var redis = require('../db/redis').redis;
+var uuid = require('node-uuid');
 
 module.exports.wechat_code_callback = function(req, res) {
   redis.get(req.query.state, function(err, results) {
@@ -62,6 +63,7 @@ module.exports.wechat_code_callback = function(req, res) {
 
     function create_new_user(user_info) {
       var model = new db.Users({
+        _id: uuid.v1(),
         name: user_info.openid,
         nickname: user_info.nickname,
         password: 'no password',
