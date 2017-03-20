@@ -1,5 +1,5 @@
 var db = require('../db/mongo_schema');
-var uuid = require('uuid');
+var uuid = require('shortid');
 
 function get_work_info_by_name(user_id, work_name) {
   return new Promise(function(resolve, reject) {
@@ -27,7 +27,7 @@ function get_work_info_by_name(user_id, work_name) {
 }
 
 function create_work(user_id, work_name, description, work_id) {
-  work_id = work_id || uuid.v1();
+  work_id = work_id || uuid.generate();
   description = description || '';
   cdn_filename = work_id;
   return new Promise(function(resolve, reject) {

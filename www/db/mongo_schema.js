@@ -1,11 +1,11 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var uuid = require('node-uuid');
+var uuid = require('shortid');
 
 var worksSchema = mongoose.Schema({
   _id: {
     type: String,
-    default: uuid.v1
+    default: uuid.generate
   },
   name: {
     type: String,
@@ -27,7 +27,7 @@ var worksSchema = mongoose.Schema({
 var usersSchema = mongoose.Schema({
   _id: {
     type: String,
-    default: uuid.v1
+    default: uuid.generate
   },
   name: {
     type: String,
@@ -71,7 +71,7 @@ var usersSchema = mongoose.Schema({
 var commentsSchema = mongoose.Schema({
   _id: {
     type: String,
-    default: uuid.v1
+    default: uuid.generate
   },
   content: {
     type: String,

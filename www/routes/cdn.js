@@ -4,7 +4,7 @@ var config = require('../config/cdn_config.json');
 var express = require('express');
 var router = express.Router();
 var work_util = require('./work_util');
-var uuid = require('uuid');
+var uuid = require('shortid');
 
 qiniu.conf.ACCESS_KEY = config.AK;
 qiniu.conf.SECRET_KEY = config.SK;
@@ -23,11 +23,11 @@ router.post('/work_token', function(req, res) {
 
   work_util.get_work_info_by_name(user_id, work_name).then(function(work_info) {
     if (!work_info) {
-      work_id = uuid.v1();
+      work_id = uuid.generate();
       filename = work_id;
     } else {
       work_id = work_info._id;
-      filename = uuid.v1();
+      filename = uuid.generate();
     }
     response_token(work_id, filename);
   });
@@ -87,7 +87,7 @@ router.post('/work_callback', function(req, res) {
 
 function get_token(req, bucket, file_dir, filename, cb_url, data) {
   return new Promise(function(resolve, reject) {
-    var random_key = uuid.v1();
+    var random_key = uuid.generate();
     var user_id = req.session.user_id;
 
     redis.pipeline()
