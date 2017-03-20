@@ -42,7 +42,6 @@ router.post('/work_token', function(req, res) {
         code: 0,
         data: {
           token: token,
-          key: file_dir + '/' + filename,
         }
       });
     });
