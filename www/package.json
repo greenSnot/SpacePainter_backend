@@ -20,13 +20,13 @@
     "lodash": "latest",
     "mongoose": "^4.4.10",
     "morgan": "^1.6.1",
-    "node-uuid": "^1.4.7",
     "nodegrass": "0.0.3",
     "qiniu": "^6.1.13",
     "redirect-https": "^1.1.1",
     "serve-favicon": "^2.3.0",
     "sha1": "^1.1.1",
     "urlencode": "^1.1.0",
+    "uuid": "^3.0.1",
     "when": "^3.7.7"
   },
   "devDependencies": {}
