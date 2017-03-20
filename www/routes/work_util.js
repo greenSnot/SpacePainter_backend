@@ -7,18 +7,15 @@ function get_work_info_by_name(user_id, work_name) {
       _id: user_id,
     }).populate({
       path: 'works',
-      select: {
-      //  _id: 1,
-      //  cdn_filename: 1,
-      },
       match: {
-        name: work_name
+        name: work_name,
       },
       options: {
+        limit: 1
       }
     }).exec().then(function(data) {
-      if (data) {
-        resolve(data);
+      if (data.works[0]) {
+        resolve(data.works[0]);
       } else {
         resolve(undefined);
       }
@@ -39,9 +36,15 @@ function create_work(user_id, work_name, description, work_id) {
       cdn_filename: cdn_filename,
     });
     model.save().then(function(result) {
-      //TODO error check
-      //TODO add work id to Users ?
-      resolve(work_id);
+      db.Users.update({
+        _id: user_id,
+      }, {
+        $push: {
+          works: work_id
+        }
+      }).exec(function(result) {
+        resolve(work_id);
+      });
     });
   });
 }

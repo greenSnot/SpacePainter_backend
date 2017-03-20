@@ -42,39 +42,41 @@ router.post('/work_token', function(req, res) {
         code: 0,
         data: {
           token: token,
+          key: file_dir + '/' + filename,
         }
       });
     });
   }
 });
 
-router.post('/work_callback', function(req, res) {
+function upload_work_callback(req, res) {
   var token = req.body.token;
   redis.pipeline().get(token).exec(function(err, results) {
     if (err) {
       res.json({msg: 'unknown', code: -1});
       return;
     }
-    if (results) {
+    if (results[0][1]) {
+      results = JSON.parse(results[0][1]);
       var user_id = results[0];
       var work_name = results[1];
       var work_id = results[2];
-      var description = result[3];
-      var filename = result[4];
+      var description = results[3];
+      var filename = results[4];
 
-      redis.pipeline().remove(token).exec(function(err, results) {
+      redis.pipeline().del(token).exec(function(err, results) {
         if (err) {
           res.json({msg: 'unknown', code: -2});
           return;
         }
-        work_util.get_work_id_by_name(user_id, work_name).then(function(work_id) {
-          if (!work_id) {
+        work_util.get_work_info_by_name(user_id, work_name).then(function(work_info) {
+          if (!work_info) {
             work_util.create_work(user_id, work_name, description, work_id).then(function(result) {
               //TODO
               res.json({msg: 'ok', code: 0});
             });
           } else {
-            work_util.update_work_cdn_filename(work_id, filename).then(function(result) {
+            work_util.update_work_cdn_filename(work_info._id, filename).then(function(result) {
               res.json({msg: 'ok', code: 0});
             });
           }
@@ -82,7 +84,7 @@ router.post('/work_callback', function(req, res) {
       });
     }
   });
-});
+}
 
 function get_token(req, bucket, file_dir, filename, cb_url, data) {
   return new Promise(function(resolve, reject) {
@@ -90,7 +92,7 @@ function get_token(req, bucket, file_dir, filename, cb_url, data) {
     var user_id = req.session.user_id;
 
     redis.pipeline()
-         .set(random_key, data, 'PX', token_timeout)
+         .set(random_key, JSON.stringify(data), 'PX', token_timeout)
          .exec(function(err, result) {
       if (err) {
         reject(err);
@@ -108,4 +110,7 @@ function get_token(req, bucket, file_dir, filename, cb_url, data) {
     });
   });
 }
-module.exports = router;
+module.exports = {
+  router: router,
+  upload_work_callback: upload_work_callback,
+};

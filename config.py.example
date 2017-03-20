@@ -40,8 +40,9 @@ ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ADD ./www/package.json /root/www/
-RUN cd /root/www && npm install
+RUN sudo npm install -g node-gyp
 RUN sudo npm install -g pm2
+RUN cd /root/www && npm install
 
 ADD ./www /root/www
 ADD ./build/host_config.json /root/www/config/

@@ -89,4 +89,4 @@ var commentsSchema = mongoose.Schema({
 
 exports.Users = mongoose.model('Users', usersSchema);
 exports.Works = mongoose.model('Works', worksSchema);
-exports.Works = mongoose.model('Comments', commentsSchema);
+exports.Comments = mongoose.model('Comments', commentsSchema);
