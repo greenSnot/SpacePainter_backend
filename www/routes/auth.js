@@ -5,7 +5,7 @@ var db = require('../db/mongo_schema');
 var nodegrass = require('nodegrass');
 var host_config = require('../config/host_config.json');
 var redis = require('../db/redis').redis;
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 
 module.exports.wechat_code_callback = function(req, res) {
   redis.get(req.query.state, function(err, results) {

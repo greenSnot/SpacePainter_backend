@@ -4,7 +4,7 @@ var config = require('../config/cdn_config.json');
 var express = require('express');
 var router = express.Router();
 var work_util = require('./work_util');
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 
 qiniu.conf.ACCESS_KEY = config.AK;
 qiniu.conf.SECRET_KEY = config.SK;

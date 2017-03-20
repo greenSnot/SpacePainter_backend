@@ -1,5 +1,5 @@
 var db = require('../db/mongo_schema');
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 
 function get_work_info_by_name(user_id, work_name) {
   return new Promise(function(resolve, reject) {
