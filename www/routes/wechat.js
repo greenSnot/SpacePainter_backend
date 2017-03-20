@@ -24,9 +24,12 @@ router.post('/ticket', function(req, res) {
         '&timestamp=' + date +
         '&url=' + req.body.url);
     res.json({
-      timestamp: date,
-      noncestr: noncestr,
-      signature: signature
+      code: 0,
+      data: {
+        timestamp: date,
+        noncestr: noncestr,
+        signature: signature
+      }
     });
   });
 });
