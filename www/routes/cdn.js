@@ -12,28 +12,38 @@ qiniu.conf.SECRET_KEY = config.SK;
 var token_timeout = 500 * 1000; // 500s
 
 router.post('/work_token', function(req, res) {
-  var bucket = 'infinityisle';
-  var file_path = 'works/';
+  var bucket = config.bucket_name;
+  var file_dir = 'works';
   var work_name = req.body.work_name;
   var user_id = req.session.user_id;
+  var work_id;
+  var filename;
   //TODO
   var description = '';
 
-  work_util.get_work_id_by_name(user_id, work_name).then(function(work_id) {
-    if (!work_id) {
+  work_util.get_work_info_by_name(user_id, work_name).then(function(work_info) {
+    if (!work_info) {
       work_id = uuid.v1();
+      filename = work_id;
+    } else {
+      work_id = work_info._id;
+      filename = uuid.v1();
     }
-    response_token_by_work_id(work_id);
+    response_token(work_id, filename);
   });
-  function response_token_by_work_id(work_id) {
-    var file_name =  work_id;
+
+  function response_token(work_id, filename) {
     var cb_url = req.protocol + '://' + req.get('host') + '/upload_work_callback';
 
-    var data = [user_id, work_name, work_id, description];
+    var data = [user_id, work_name, work_id, description, filename];
 
-    get_token(req, bucket, file_path, file_name, cb_url, data).then(function(token) {
+    get_token(req, bucket, file_dir, filename, cb_url, data).then(function(token) {
       res.json({
-        token: token
+        code: 0,
+        data: {
+          token: token,
+          key: file_dir + '/' + filename,
+        }
       });
     });
   }
@@ -51,6 +61,7 @@ router.post('/work_callback', function(req, res) {
       var work_name = results[1];
       var work_id = results[2];
       var description = result[3];
+      var filename = result[4];
 
       redis.pipeline().remove(token).exec(function(err, results) {
         if (err) {
@@ -64,8 +75,9 @@ router.post('/work_callback', function(req, res) {
               res.json({msg: 'ok', code: 0});
             });
           } else {
-            // work exists so do nothing
-            res.json({msg: 'ok', code: 0});
+            work_util.update_work_cdn_filename(work_id, filename).then(function(result) {
+              res.json({msg: 'ok', code: 0});
+            });
           }
         });
       });
@@ -73,7 +85,7 @@ router.post('/work_callback', function(req, res) {
   });
 });
 
-function get_token(req, bucket, file_path, file_name, cb_url, data) {
+function get_token(req, bucket, file_dir, filename, cb_url, data) {
   return new Promise(function(resolve, reject) {
     var random_key = uuid.v1();
     var user_id = req.session.user_id;
@@ -85,7 +97,7 @@ function get_token(req, bucket, file_path, file_name, cb_url, data) {
         reject(err);
         return;
       }
-      var file_url = bucket + ':' + file_path + '/' + file_name;
+      var file_url = bucket + ':' + file_dir + '/' + filename;
       var parameters = 'name=$(fname)&hash=$(etag)' + '&token=' + random_key;
       var putPolicy = new qiniu.rs.PutPolicy(
         file_url,

@@ -18,6 +18,9 @@ var worksSchema = mongoose.Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'Users'
+  },
+  cdn_filename: {
+    type: String,
   }
 });
 
