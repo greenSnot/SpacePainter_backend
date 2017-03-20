@@ -16,7 +16,7 @@ var worksSchema = mongoose.Schema({
     required: true
   },
   user: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: 'Users'
   },
   cdn_filename: {
@@ -56,13 +56,13 @@ var usersSchema = mongoose.Schema({
   },
   works: [
     {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: 'Works'
     }
   ],
   favorites: [
     {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: 'Works'
     }
   ],
@@ -78,11 +78,11 @@ var commentsSchema = mongoose.Schema({
     required: true
   },
   user: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: 'Users'
   },
   work: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: 'Works'
   }
 });

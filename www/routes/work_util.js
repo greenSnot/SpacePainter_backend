@@ -4,7 +4,7 @@ var uuid = require('shortid');
 function get_work_info_by_name(user_id, work_name) {
   return new Promise(function(resolve, reject) {
     db.Users.find({
-      _id: req.session.user_id,
+      _id: user_id,
     }).populate({
       path: 'works',
       select: {
@@ -12,7 +12,7 @@ function get_work_info_by_name(user_id, work_name) {
       //  cdn_filename: 1,
       },
       match: {
-        name: name
+        name: work_name
       },
       options: {
       }
@@ -65,7 +65,7 @@ function update_work_cdn_filename(work_id, cdn_filename) {
 }
 
 module.exports = {
-  get_work_id_by_name: get_work_id_by_name,
+  get_work_info_by_name: get_work_info_by_name,
   update_work_cdn_filename: update_work_cdn_filename,
   create_work: create_work,
 };
