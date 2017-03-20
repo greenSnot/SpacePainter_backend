@@ -9,10 +9,12 @@ var uuid = require('shortid');
 qiniu.conf.ACCESS_KEY = config.AK;
 qiniu.conf.SECRET_KEY = config.SK;
 
+var qn_client = new qiniu.rs.Client();
+
 var token_timeout = 500 * 1000; // 500s
+var bucket = config.bucket_name;
 
 router.post('/work_token', function(req, res) {
-  var bucket = config.bucket_name;
   var file_dir = 'works';
   var work_name = req.body.work_name;
   var user_id = req.session.user_id;
@@ -72,12 +74,15 @@ function upload_work_callback(req, res) {
         work_util.get_work_info_by_name(user_id, work_name).then(function(work_info) {
           if (!work_info) {
             work_util.create_work(user_id, work_name, description, work_id).then(function(result) {
-              //TODO
               res.json({msg: 'ok', code: 0});
             });
           } else {
+            var old_cdn_filename = work_info.cdn_filename;
             work_util.update_work_cdn_filename(work_info._id, filename).then(function(result) {
-              res.json({msg: 'ok', code: 0});
+              //remove old file
+              delete_resource(bucket, 'works/' + old_cdn_filename).then(function(result) {
+                res.json({msg: 'ok', code: 0});
+              });
             });
           }
         });
@@ -110,7 +115,20 @@ function get_token(req, bucket, file_dir, filename, cb_url, data) {
     });
   });
 }
+
+function delete_resource(bucket, key) {
+  return Promise(function(resolve, reject) {
+    qn_client.remove(bucket, key, function(err, ret) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+}
 module.exports = {
   router: router,
+  delete_resource: delete_resource,
   upload_work_callback: upload_work_callback,
 };
