@@ -51,10 +51,12 @@ function create_work(user_id, work_name, description, work_id) {
 
 function update_work_cdn_filename(work_id, cdn_filename) {
   return new Promise(function(resolve, reject) {
-    db.Wroks.update({
+    db.Works.update({
       _id: work_id
     }, {
-      cdn_filename: cdn_filename
+      $set: {
+        cdn_filename: cdn_filename
+      }
     }, {
       upsert: false
     }, function(err, result) {

@@ -13,7 +13,6 @@ var worksSchema = mongoose.Schema({
   },
   description: {
     type: String,
-    required: true
   },
   user: {
     type: String,
