@@ -150,6 +150,7 @@ ENTRYPOINT sudo mongod --port """ + str(MONGO_PORT) + """ --auth --fork --logpat
     }
   },
   "cdn": {
+    "bucket_name": "test",
     "AK": "",
     "SK": "",
   },
