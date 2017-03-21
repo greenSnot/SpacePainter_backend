@@ -3,7 +3,7 @@ var uuid = require('shortid');
 
 function get_work_info_by_name(user_id, work_name) {
   return new Promise(function(resolve, reject) {
-    db.Users.find({
+    db.Users.findOne({
       _id: user_id,
     }).populate({
       path: 'works',
