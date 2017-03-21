@@ -3,12 +3,14 @@ var router = express.Router();
 var db = require('../db/mongo_schema');
 
 router.post('/', function(req, res) {
-  var type = req.body.type;
-  var skip = req.body.skip;
+  var type = req.body.type || 'popular';
+  var skip = req.body.skip || 0;
   var limit = req.body.limit || 10;
   limit = limit > 10 ? 10 : limit;
 
-  db.Works.find().skip(skip).limit(limit).exec(function(err, result) {
+  db.Works.find({
+    //TODO
+  }).skip(skip).limit(limit).exec(function(err, result) {
     if (err) {
       console.error(err);
       res.json({
