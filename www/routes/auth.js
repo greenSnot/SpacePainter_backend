@@ -115,8 +115,7 @@ module.exports.wechat_code_callback = function(req, res) {
 };
 
 function logout(req) {
-  req.session.user = undefined;
-  req.session.user_type = undefined;
+  req.session.user_id = undefined;
   req.session.save();
 }
 
