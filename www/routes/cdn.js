@@ -15,7 +15,7 @@ var token_timeout = 500 * 1000; // 500s
 var bucket = config.bucket_name;
 
 router.post('/work_token', function(req, res) {
-  var file_dir = config.projet_name + '/works';
+  var file_dir = config.project_name + '/works';
   var work_name = req.body.work_name;
   var user_id = req.session.user_id;
   var work_id;
