@@ -1,28 +1,30 @@
-var express = require('express');
-var router = express.Router();
-var db = require('../db/mongo_schema');
+let express = require('express');
+let router = express.Router();
+let db = require('../db/mongo_schema');
+let work_util = require('./work_util');
 
 router.post('/', function(req, res) {
-  var type = req.body.type || 'popular';
-  var skip = req.body.skip || 0;
-  var limit = req.body.limit || 10;
-  limit = limit > 10 ? 10 : limit;
-
-  db.Works.find({
-    //TODO
-  }).skip(skip).limit(limit).exec(function(err, result) {
-    if (err) {
-      console.error(err);
-      res.json({
-        code: -1,
-        msg: 'err'
-      });
-      return;
-    }
+  var data;
+  work_util.find_works({
+    type: req.body.type || work_util.WorkSortType.popular,
+    skip: req.body.skip || 0,
+    limit: Math.min(req.body.limit || 10, 10)
+  }).then(function(result) {
+    data = result;
+    return db.Works.count().exec();
+  }).then(function(count) {
     res.json({
       code: 0,
-      data: result
+      data: data,
+      count: count
+    });
+  }).catch(function(e) {
+    console.error(e);
+    res.json({
+      code: -1,
+      msg: 'unknown'
     });
   });
 });
+
 module.exports = router;

@@ -72,19 +72,18 @@ function upload_work_callback(req, res) {
           return;
         }
         work_util.get_work_info_by_name(user_id, work_name).then(function(work_info) {
-          if (!work_info) {
-            work_util.create_work(user_id, work_name, description, work_id).then(function(result) {
+          var old_cdn_filename = work_info.cdn_filename;
+          work_util.update_work_cdn_filename(work_info._id, filename).then(function(result) {
+            //remove old file
+            delete_resource(bucket, 'works/' + old_cdn_filename).then(function(result) {
               res.json({msg: 'ok', code: 0});
             });
-          } else {
-            var old_cdn_filename = work_info.cdn_filename;
-            work_util.update_work_cdn_filename(work_info._id, filename).then(function(result) {
-              //remove old file
-              delete_resource(bucket, 'works/' + old_cdn_filename).then(function(result) {
-                res.json({msg: 'ok', code: 0});
-              });
-            });
-          }
+          });
+        }).catch(function(e) {
+          // not exist
+          work_util.create_work(user_id, work_name, description, work_id).then(function(result) {
+            res.json({msg: 'ok', code: 0});
+          });
         });
       });
     }

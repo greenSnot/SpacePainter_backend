@@ -6,7 +6,7 @@ router.post('/info', function(req, res) {
   var work_id = req.body.work_id;
   db.Works.findOne({
     _id: work_id,
-  }).then(function(work_info) {
+  }).exec().then(function(work_info) {
     res.json({
       code: 0,
       data: work_info

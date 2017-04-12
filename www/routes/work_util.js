@@ -1,6 +1,15 @@
 var db = require('../db/mongo_schema');
 var uuid = require('shortid');
 
+var WorkSortType = {
+  popular: 1,
+  latest: 2,
+};
+
+var WorkSortBy = {};
+WorkSortBy[WorkSortType.popular] = 'views';
+WorkSortBy[WorkSortType.latest] = 'created_time';
+
 function get_work_info_by_name(user_id, work_name) {
   return new Promise(function(resolve, reject) {
     db.Users.findOne({
@@ -17,7 +26,7 @@ function get_work_info_by_name(user_id, work_name) {
       if (data.works[0]) {
         resolve(data.works[0]);
       } else {
-        resolve(undefined);
+        reject();
       }
     });
   });
@@ -34,6 +43,11 @@ function create_work(user_id, work_name, description, work_id) {
       description: description,
       user: user_id,
       cdn_filename: cdn_filename,
+      likes: 0,
+      views: 0,
+      comments: [],
+      created_time: Date.now(),
+      updated_time: Date.now(),
     });
     model.save().then(function(result) {
       db.Users.update({
@@ -55,7 +69,8 @@ function update_work_cdn_filename(work_id, cdn_filename) {
       _id: work_id
     }, {
       $set: {
-        cdn_filename: cdn_filename
+        cdn_filename: cdn_filename,
+        updated_time: Date.now(),
       }
     }, {
       upsert: false
@@ -69,8 +84,18 @@ function update_work_cdn_filename(work_id, cdn_filename) {
   });
 }
 
+function find_works(opts) {
+  let condition = {};
+  if (opts.user_id) {
+    condition.user = user_id;
+  }
+
+  return db.Works.find(condition).skip(skip).limit(limit).sort(WorkSortBy[type]).exec();
+}
+
 module.exports = {
   get_work_info_by_name: get_work_info_by_name,
   update_work_cdn_filename: update_work_cdn_filename,
   create_work: create_work,
+  WorkSortType: WorkSortType,
 };

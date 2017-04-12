@@ -20,7 +20,25 @@ var worksSchema = mongoose.Schema({
   },
   cdn_filename: {
     type: String,
-  }
+  },
+  likes: {
+    type: Number,
+  },
+  views: {
+    type: Number,
+  },
+  created_time: {
+    type: Number,
+  },
+  updated_time: {
+    type: Number,
+  },
+  comments: [
+    {
+      type: String,
+      ref: 'Comments'
+    }
+  ],
 });
 
 var usersSchema = mongoose.Schema({
@@ -65,6 +83,9 @@ var usersSchema = mongoose.Schema({
       ref: 'Works'
     }
   ],
+  created_time: {
+    type: Number,
+  },
 });
 
 var commentsSchema = mongoose.Schema({
@@ -76,6 +97,16 @@ var commentsSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  rx: {
+    type: Number,
+  },
+  ry: {
+    type: Number,
+  },
+  reply_to: {
+    type: String,
+    ref: 'Users'
+  },
   user: {
     type: String,
     ref: 'Users'
@@ -83,7 +114,10 @@ var commentsSchema = mongoose.Schema({
   work: {
     type: String,
     ref: 'Works'
-  }
+  },
+  created_time: {
+    type: Number,
+  },
 });
 
 exports.Users = mongoose.model('Users', usersSchema);

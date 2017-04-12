@@ -81,6 +81,7 @@ module.exports.wechat_code_callback = function(req, res) {
         },
         works: [],
         favorites: [],
+        date: Date.now(),
       });
       model.save().then(function(result) {
         return db.Users.findOne({
