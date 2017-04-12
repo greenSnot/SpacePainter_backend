@@ -6,7 +6,8 @@ let work_util = require('./work_util');
 router.post('/', function(req, res) {
   var data;
   work_util.find_works({
-    type: req.body.type || work_util.WorkSortType.popular,
+    user_id: req.body.user_id,
+    type: req.body.type || work_util.WorkSortType.latest,
     skip: req.body.skip || 0,
     limit: Math.min(req.body.limit || 10, 10)
   }).then(function(result) {
