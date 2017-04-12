@@ -90,7 +90,11 @@ function find_works(opts) {
     condition.user = user_id;
   }
 
-  return db.Works.find(condition).skip(skip).limit(limit).sort('-' + WorkSortBy[type]).exec();
+  return db.Works.find(condition).
+    skip(opts.skip).
+    limit(opts.limit).
+    sort(opts.sort).
+    exec();
 }
 
 module.exports = {
@@ -98,4 +102,6 @@ module.exports = {
   update_work_cdn_filename: update_work_cdn_filename,
   create_work: create_work,
   WorkSortType: WorkSortType,
+  WorkSortBy: WorkSortBy,
+  find_works: find_works,
 };

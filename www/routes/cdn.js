@@ -24,13 +24,11 @@ router.post('/work_token', function(req, res) {
   var description = '';
 
   work_util.get_work_info_by_name(user_id, work_name).then(function(work_info) {
-    if (!work_info) {
-      work_id = uuid.generate();
-      filename = work_id;
-    } else {
-      work_id = work_info._id;
-      filename = uuid.generate();
-    }
+    filename = uuid.generate();
+    response_token(work_info._id, filename);
+  }).catch(function(e) {
+    work_id = uuid.generate();
+    filename = work_id;
     response_token(work_id, filename);
   });
 
