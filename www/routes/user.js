@@ -7,9 +7,11 @@ router.post('/info', function(req, res) {
     _id: req.session.user_id,
   }).exec().then(function(u) {
     if (u) {
+      var data = u.wechat;
+      data.id = req.session.user_id;
       res.json({
         code: 0,
-        data: u.wechat
+        data: data
       });
     } else {
       res.json({
