@@ -87,7 +87,7 @@ function update_work_cdn_filename(work_id, cdn_filename) {
 function find_works(opts) {
   let condition = {};
   if (opts.user_id) {
-    condition.user = user_id;
+    condition.user = opts.user_id;
   }
 
   return db.Works.find(condition).
