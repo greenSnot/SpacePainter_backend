@@ -14,8 +14,10 @@ var qn_client = new qiniu.rs.Client();
 var token_timeout = 500 * 1000; // 500s
 var bucket = config.bucket_name;
 
+var works_file_dir = config.project_name + '/works';
+
 router.post('/work_token', function(req, res) {
-  var file_dir = config.project_name + '/works';
+  var file_dir = works_file_dir;
   var work_name = req.body.work_name;
   var user_id = req.session.user_id;
   var work_id;
@@ -73,7 +75,7 @@ function upload_work_callback(req, res) {
           var old_cdn_filename = work_info.cdn_filename;
           work_util.update_work_cdn_filename(work_info._id, filename).then(function(result) {
             //remove old file
-            delete_resource(bucket, 'works/' + old_cdn_filename).then(function(result) {
+            delete_resource(bucket, works_file_dir + old_cdn_filename).then(function(result) {
               res.json({msg: 'ok', code: 0});
             });
           });
@@ -114,8 +116,8 @@ function get_token(req, bucket, file_dir, filename, cb_url, data) {
 }
 
 function delete_resource(bucket, key) {
-  return Promise(function(resolve, reject) {
-    qn_client.remove(bucket, key, function(err, ret) {
+  return new Promise(function(resolve, reject) {
+    qn_client.remove(bucket, key, function(err, result) {
       if (err) {
         reject(err);
       } else {
@@ -124,8 +126,14 @@ function delete_resource(bucket, key) {
     });
   });
 }
+
+function delete_work_by_filename(filename) {
+  return delete_resource(bucket, works_file_dir + '/' + filename);
+}
+
 module.exports = {
   router: router,
   delete_resource: delete_resource,
+  delete_work_by_filename: delete_work_by_filename,
   upload_work_callback: upload_work_callback,
 };
