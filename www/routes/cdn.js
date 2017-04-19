@@ -75,7 +75,7 @@ function upload_work_callback(req, res) {
           var old_cdn_filename = work_info.cdn_filename;
           work_util.update_work_cdn_filename(work_info._id, filename).then(function(result) {
             //remove old file
-            delete_resource(bucket, works_file_dir + old_cdn_filename).then(function(result) {
+            delete_resource(bucket, works_file_dir + '/' + old_cdn_filename).then(function(result) {
               res.json({msg: 'ok', code: 0});
             });
           });

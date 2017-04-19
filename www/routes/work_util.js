@@ -98,32 +98,10 @@ function find_works(opts) {
     exec();
 }
 
-function delete_work(id, user_id) {
-  let condition = {
-    _id: id,
-  };
-  if (user_id) {
-    condition.user = user_id;
-  }
-  return new Promise(function(resolve, reject) {
-    db.Works.findOne(condition).exec().then(function(result) {
-      if (!result) {
-        reject();
-        return;
-      }
-      cdn.delete_work_by_filename(result.cdn_filename);
-      db.Works.findOne(condition).remove().exec().then(function(r) {
-        resolve();
-      });
-    });
-  });
-}
-
 module.exports = {
   get_work_info_by_name: get_work_info_by_name,
   update_work_cdn_filename: update_work_cdn_filename,
   create_work: create_work,
-  delete_work: delete_work,
   WorkSortType: WorkSortType,
   WorkSortBy: WorkSortBy,
   find_works: find_works,
